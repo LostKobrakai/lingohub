@@ -145,6 +145,8 @@ defmodule LingoHub do
     end
   end
 
+  @spec file_part(file, Keyword.t()) :: tuple()
+        when file: {:file, Path.t()} | {:binary, iodata}
   defp file_part({:file, path}, opts) do
     file_part({File.read!(path), Path.basename(Keyword.get(opts, :filename, path))})
   end
@@ -157,6 +159,7 @@ defmodule LingoHub do
     {"file", contents, {"form-data", [{"name", "file"}, {"filename", filename}]}, []}
   end
 
+  @spec handle_errors({:ok, term} | {:error, term}) :: {:error, term}
   defp handle_errors({:ok, %HTTPoison.Response{status_code: status}}) do
     {:error, {:status, status}}
   end

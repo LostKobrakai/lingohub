@@ -2,7 +2,11 @@ defmodule LingoHub.Gettext do
   @moduledoc """
   Convenience module for interacting with gettext based .po files.
   """
-  def list_local_sources() do
+  @doc """
+  List all local .pot files
+  """
+  @spec list_local_sources() :: list(%{path: Path.t(), filename: binary})
+  def list_local_sources do
     Path.wildcard("priv/gettext/*.pot")
     |> Enum.map(fn path ->
       ["priv", "gettext", filename] = Path.split(path)
@@ -10,7 +14,11 @@ defmodule LingoHub.Gettext do
     end)
   end
 
-  def list_local_resources() do
+  @doc """
+  List all local .po files for the translated locales
+  """
+  @spec list_local_resources() :: list(%{path: Path.t(), name: binary})
+  def list_local_resources do
     Path.wildcard("priv/gettext/*/LC_MESSAGES/*.po")
     |> Enum.map(fn path ->
       ["priv", "gettext", locale, "LC_MESSAGES", filename] = Path.split(path)
@@ -26,6 +34,10 @@ defmodule LingoHub.Gettext do
   defp locale_translate_to_lingohub(<<locale::binary-size(2)>>),
     do: locale
 
+  @doc """
+  Ge the path based on the filename of the online resource
+  """
+  @spec local_path_for_resource(LingoHub.Resource.t()) :: Path.t()
   def local_path_for_resource(%LingoHub.Resource{} = resource) do
     filename =
       resource.name
